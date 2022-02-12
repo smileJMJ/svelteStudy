@@ -1,2 +1,2 @@
-# svelte_study
+# svelteStudy
 svelte study
