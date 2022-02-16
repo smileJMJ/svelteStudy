@@ -1,0 +1,19 @@
+{
+  "name": "sveltestudy",
+  "version": "1.0.0",
+  "description": "svelte study",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smileJMJ/svelteStudy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smileJMJ/svelteStudy/issues"
+  },
+  "homepage": "https://github.com/smileJMJ/svelteStudy#readme"
+}
