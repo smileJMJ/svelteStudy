@@ -1,6 +1,5 @@
 <script>
-import { onMount } from 'svelte';
-
+    import { onMount } from 'svelte';
     import { categoryName, locCategoryValue } from '../store/AppStore';
 
     let isOpen = false; // 펼침 여부 
