@@ -743,7 +743,6 @@ await tick();
 		await tick();
 		this.selectionStart = selectionStart;
 		this.selectionEnd = selectionEnd;
-		console.log('실행됨?!');
 	}
 </script>
 
@@ -761,6 +760,195 @@ await tick();
 <br>
 
 # Stores
+## writable stores
+(1) store 생성
+```
+// store.js
+import { writable } from 'svelte';
 
+export const count = writable(0);
+```
+(2) store 구독 (subscribe)
+```
+// App.svelte
+import { count } from './store.js';
 
+let countValue; // state
 
+count.subscribe(value => {
+	countValue = value;
+});
+```
+(3) update / set 으로 state 변경
+```
+// Incrementer.svelte
+function increment() {
+	count.update(n => n + 1);
+}
+
+// Resetter.svelte
+function reset() {
+	count.set(0);
+}
+```
+
+(4) 컴포넌트는 다수의 인스턴스화/제거(destroy)로 인해 메모리 누수가 발생할 수 있음   
+=> onDestroy에서 unsubscribe 호출
+```
+const unsubscribe = count.subscribe(value => {
+	countValue = value;
+});
+
+onDestroy(unsubscribe);
+``` 
+
+<br>
+
+## Auto-subscriptions
+```
+$store변수
+```
+- Auto-subscription은 store 변수가 top-level scope에서 정의/import 될 때만 동작함
+
+(ex)
+```
+// App.svelte
+
+<script>
+	import { count } from './stores.js';
+	import Incrementer from './Incrementer.svelte';
+	import Decrementer from './Decrementer.svelte';
+	import Resetter from './Resetter.svelte';
+</script>
+
+<h1>The count is {$count}</h1>
+```
+
+<br>
+
+## Readable stores
+- 외부에서 값을 설정해서 store 내부에서는 해당 값을 읽어야할 때  (ex. 마우스 위치 / 지리적 위치 등) readable store 사용함
+```
+// store.js
+import { readable } from 'svelte/store';
+
+export const time = readable(null, function start(set) {
+	const interval = setInterval(() => {
+		set(new Date());
+	}, 1000);
+
+	return function stop() {
+		clearInterval(interval);
+		console.log('stop!!');
+	};
+});
+
+// App.svelte
+<script>
+	import { time } from './stores.js';
+
+	const formatter = new Intl.DateTimeFormat('en', {
+		hour12: true,
+		hour: 'numeric',
+		minute: '2-digit',
+		second: '2-digit'
+	});
+	
+	let currentTime;
+	
+	const unsubscribe = time.subscribe(value => {
+		currentTime = value;
+	});
+	
+	onDestroy(() => {
+		setTimeout(unsubscribe, 3000);
+	});
+</script>
+
+<h1>The time is {formatter.format(currentTime)}</h1>
+```
+
+<br>
+
+## Derived stores
+- 하나 이상의 다른 스토어로부터 파생된 값을 사용할 수 있는 스토어
+```
+// App.svelte
+<script>
+import { time, elapsed } from './stores.js';
+</script>
+
+<h1>The time is {formatter.format($time)}</h1>
+
+<p>
+	This page has been open for
+	{$elapsed} {$elapsed === 1 ? 'second' : 'seconds'}
+</p>
+
+// store.js
+import { readable, derived } from 'svelte/store';
+
+const start = new Date();
+
+export const elapsed = derived(
+	time,
+	$time => Math.round(($time - start) / 1000)
+);
+```
+
+<br>
+
+## Custom stores
+- object 타입으로 직접 구현한 store
+```
+// App.svelte
+<script>
+	import { count } from './stores.js';
+</script>
+
+<h1>The count is {$count}</h1>
+
+<button on:click={count.increment}>+</button>
+<button on:click={count.decrement}>-</button>
+<button on:click={count.reset}>reset</button>
+
+// store.js
+import { writable } from 'svelte/store';
+
+function createCount() {
+	const { subscribe, set, update } = writable(0);
+
+	return {
+		subscribe,
+		increment: () => update(n => n + 1),
+		decrement: () => update(n => n - 1),
+		reset: () => set(0)
+	};
+}
+
+export const count = createCount();
+```
+
+<br>
+<br>
+
+# Classes
+```
+<button
+	class="{current === 'foo' ? 'selected' : ''}"
+	on:click="{() => current = 'foo'}"
+>foo</button>
+
+<button
+	class:selected="{current === 'foo'}"
+	on:click="{() => current = 'foo'}"
+>foo</button>
+
+<div class:big={big}>
+	<!-- ... -->
+</div>
+
+<div class:big>
+	<!-- ... -->
+</div>
+```
