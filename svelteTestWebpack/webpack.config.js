@@ -6,7 +6,7 @@ const prod = mode === 'production';
 
 module.exports = {
 	entry: {
-		'build/bundle': ['./src/main.js']
+		'build/bundle': ['./src/main.js', './src/scss/global.scss'],
 	},
 	resolve: {
 		alias: {
@@ -36,10 +36,11 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.css$/,
+				test: /\.css|.scss$/,
 				use: [
 					MiniCssExtractPlugin.loader,
-					'css-loader'
+					'css-loader',
+					'sass-loader'
 				]
 			},
 			{
