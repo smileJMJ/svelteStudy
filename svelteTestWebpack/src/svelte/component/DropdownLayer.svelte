@@ -1,31 +1,37 @@
 <script>
     import { onMount } from 'svelte';
-    import { categoryName, locCategoryValue } from '../store/AppStore';
+    import { selectedCategory, locCategoryValue } from '../store/AppStore';
 
+    // state
     let isOpen = false; // 펼침 여부 
-    let curValue = $locCategoryValue; // select value
+    let curValue = $locCategoryValue; // selected value
+    let curCategoryName = '선택하세요';
     let dropdownLayerDom;
 
-    export let optionData; // props: select option data 
+    // props
+    export let optionData;
     export let name;
 
-    $: isOptionDataArray = Array.isArray(optionData) && optionData.length > 0;
-    $: console.log(`optionData: `, optionData); // re-run
+    // Update(re-run)
+    $: console.log(`optionData: `, optionData);
     $: {
-        if(curValue && isOptionDataArray) { // $는 state값이 해당 구문에 포함되어 있어야 실행되는 듯
-            const category = optionData.find(v => v.boardAlias === curValue);
-            const name = category && category.categoryName;
-            
-            name && categoryName.set(name);
-
-            fetchList(curValue);
+        const category = optionData.find(v => v.boardAlias === curValue);
+        const name = category && category.categoryName;
+        
+        if(name) {
+            curCategoryName = name;
+            selectedCategory.set(name); // store - update
         }
+
+        fetchList(curValue);
     }
 
+    // Mount
     onMount(() => {
         bodyClickEvent();
     });
 
+    // body 클릭 시 select 닫는 함수
     const bodyClickEvent = () => {
         document.body.addEventListener('click', e => {
             if(dropdownLayerDom && !dropdownLayerDom.contains(e.target)) {
@@ -34,24 +40,26 @@
         });
     };
 
+    // 버튼 클릭 - select 펼침/닫힘
     const btnClick = e => {
         isOpen = !isOpen;
     };
 
-    const optionClick = (e, value, text) => {
+    // 옵션 클릭 - curValue 변경, select 닫힘
+    const optionClick = (e, value) => {
         curValue = value;
         isOpen = false;
     };
 
+    // 게시판 글 호출
     const fetchList = (value) => {
         console.log(`현재 value: ${value}`);
     };
 </script>
 
-{#if isOptionDataArray && name}
-<div id="{name}" class="dropdown-wrap"  bind:this={dropdownLayerDom}>
+<div id={name} class="dropdown-wrap"  bind:this={dropdownLayerDom}>
     <div class="dropdown-btn">
-        <button on:click={btnClick}>{$categoryName}</button>
+        <button on:click={btnClick}>{curCategoryName}</button>
     </div>
     <div class="dropdown-layer {isOpen ? 'open' : ''}">
         <ul>
@@ -63,7 +71,6 @@
         </ul>
     </div>
 </div>
-{/if}
 
 <style>
 .dropdown-wrap {

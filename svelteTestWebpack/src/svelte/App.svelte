@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { categoryName } from './store/AppStore';
+	import { selectedCategory } from './store/AppStore';
 	import DropdownLayer from './component/DropdownLayer.svelte';
 
 	let data;
@@ -14,8 +14,14 @@
 </script>
 
 <main>
-	<p>선택한 카테고리명은 <strong>{$categoryName}</strong>입니다.</p>
-	<DropdownLayer name="select1" optionData="{data}"/>
+	{#if Array.isArray(data) && data.length > 0}
+		{#if typeof $selectedCategory === 'string'}
+		<p>선택한 카테고리명은 <strong>{$selectedCategory}</strong>입니다.</p>
+		{:else}
+		<p>카테고리를 선택하세요.</p>
+		{/if}
+		<DropdownLayer name="select1" optionData="{data}"/>
+	{/if}
 </main>
 
 <style>

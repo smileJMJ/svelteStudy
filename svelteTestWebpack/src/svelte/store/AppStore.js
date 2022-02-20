@@ -14,7 +14,7 @@ import { writable, readable } from "svelte/store";
         }
 */
 
-export const categoryName = writable('선택하세요');
+export const selectedCategory = writable(null);
 export const locCategoryValue = readable(null, set => {
     const value = location.search && location.search.split('categoryValue=')[1];
     const categoryValue = value && value.split('&')[0];
