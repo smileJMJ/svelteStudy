@@ -17,9 +17,11 @@ const App = () => {
             {
                 Array.isArray(data) && data.length > 0 && 
                 <>
-                    <p>
-                        {selectedCategory ? `선택한 카테고리명은 ${selectedCategory}입니다.` : '카테고리를 선택하세요.'}
-                    </p>
+                    {
+                        selectedCategory ? 
+                        <p>선택한 카테고리명은 <strong>{selectedCategory}</strong>입니다.</p>
+                        : <p>카테고리를 선택하세요.</p>
+                    }
                     <DropdownLayer optionData={data} setSelectedCategory={setSelectedCategory}/>
                 </>
             }
