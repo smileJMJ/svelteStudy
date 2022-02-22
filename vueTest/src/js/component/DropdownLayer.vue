@@ -34,6 +34,9 @@ export default {
         this.bodyClickEvent();
     },
     watch: {
+        optionData(newValue) {
+            console.log(`optionData: ${newValue}`);
+        },
         curValue(newValue) {
             const category = this.optionData.find(v => v.boardAlias === newValue);
             const name = category && category.categoryName;

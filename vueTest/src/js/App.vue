@@ -19,13 +19,11 @@ export default {
         DropdownLayer
     },
     mounted() {
-        this.$nextTick(() => {
-            fetch('http://localhost:8081/data')
+        fetch('http://localhost:8081/data')
             .then(res => res.json())
             .then(res => {
                 this.optionData = res;
             });
-        });
     },
     data() {
         return {

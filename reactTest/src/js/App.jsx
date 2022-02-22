@@ -22,7 +22,7 @@ const App = () => {
                         <p>선택한 카테고리명은 <strong>{selectedCategory}</strong>입니다.</p>
                         : <p>카테고리를 선택하세요.</p>
                     }
-                    <DropdownLayer optionData={data} setSelectedCategory={setSelectedCategory}/>
+                    <DropdownLayer name="select1" optionData={data} setSelectedCategory={setSelectedCategory}/>
                 </>
             }
         </>

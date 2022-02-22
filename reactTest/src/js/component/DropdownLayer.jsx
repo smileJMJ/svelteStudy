@@ -4,7 +4,7 @@ const DropdownLayer = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [curValue, setCurValue] = useState(null);
     const [curCategoryName, setCurCategoryName] = useState('선택하세요');
-    const {optionData, name = '', setSelectedCategory} = props;
+    const {optionData = [], name = '', setSelectedCategory} = props;
     let $ref = useRef(null);
 
     // Mount

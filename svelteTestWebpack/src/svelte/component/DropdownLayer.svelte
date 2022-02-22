@@ -9,8 +9,8 @@
     let dropdownLayerDom;
 
     // props
-    export let optionData;
-    export let name;
+    export let optionData = [];
+    export let name = '';
 
     // Update(re-run)
     $: console.log(`optionData: `, optionData);
